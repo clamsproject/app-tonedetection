@@ -5,7 +5,9 @@ FROM ghcr.io/clamsproject/clams-python-ffmpeg:0.5.3
 ################################################################################
 # system dependencies
 ################################################################################
-RUN apt-get update && apt-get install -y gcc
+RUN apt-get update
+RUN pip3 install numpy 
+RUN apt-get install -y gcc
 
 ################################################################################
 # main app installation
