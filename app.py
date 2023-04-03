@@ -3,12 +3,8 @@
 
 # Imports ============================|
 import argparse
-import subprocess 
-import os, sys
-import json
 import aubio
 import numpy as np
-
 
 from clams import ClamsApp, Restifier, AppMetadata
 from typing import Union, Tuple
@@ -26,8 +22,7 @@ class ToneDetection(ClamsApp):
         tone_detec_version = '0.0.1'
         metadata = AppMetadata(
             name="Tone Detector",
-            description="Wraps a monotonic audio detector. The detector being wrapped was developed in-house at Brandeis"
-                        "University by Dean Cahill.",
+            description="Detects spans of monotonic audio",
             app_version=app_version,
             app_license="Apache 2.0",
             url=f"http://mmif.clams.ai/apps/tonesdetection/{__version__}",
@@ -86,10 +81,10 @@ class ToneDetection(ClamsApp):
         for i, file in enumerate(files):
             newview.new_contain(AnnotationTypes.TimeFrame, 
                                 timeUnit = conf["timeUnit"],
-                                document = docs[i])
+                                document = docs[i].id)
             
             tones = self._detect_tones(file, conf)
-            
+
             for tone_pair in tones:
                 tf_anno = newview.new_annotation(AnnotationTypes.TimeFrame)
                 tf_anno.add_property("start", tone_pair[0])
@@ -118,8 +113,13 @@ class ToneDetection(ClamsApp):
         start_sample = 0
         duration = kwargs["sample_size"]
 
-        while read2 >= kwargs["sample_size"]:
-            similarity =- np.average(np.correlate(vec1, vec2, mode="valid"))
+        if kwargs["stopAt"] is not None:
+            endpoint = kwargs["stopAt"]
+        else:
+            endpoint = aud.duration
+        
+        while read2 >= kwargs["sample_size"] and start_sample < endpoint:
+            similarity = np.average(np.correlate(vec1, vec2, mode="valid"))
             sim_count = 0
             while similarity >= kwargs["tolerance"]:
                 sim_count += 1

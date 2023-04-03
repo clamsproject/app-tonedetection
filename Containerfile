@@ -1,14 +1,15 @@
 # Use the same base image version as the clams-python python library version
-FROM ghcr.io/clamsproject/clams-python:x.y.z
+FROM ghcr.io/clamsproject/clams-python-ffmpeg:0.5.3
 # See https://github.com/orgs/clamsproject/packages?tab=packages&q=clams-python for more base images
 
 ################################################################################
-# clams-python base images are based on debian distro
-# install more system packages as needed using the apt manager
+# system dependencies
 ################################################################################
+RUN apt-get update && apt-get install -y gcc
 
 ################################################################################
 # main app installation
+################################################################################
 COPY ./ /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt
