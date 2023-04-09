@@ -5,7 +5,17 @@ FROM ghcr.io/clamsproject/clams-python-ffmpeg:0.5.3
 ################################################################################
 # system dependencies
 ################################################################################
-RUN apt-get update && apt-get install -y gcc
+RUN apt-get update
+RUN pip install numpy
+RUN apt-get install -y gcc
+RUN apt-get install -y \
+        libavutil-dev \
+        libavcodec-dev \ 
+        libavformat-dev \ 
+        libavresample-dev \ 
+        libswscale-dev \ 
+        libswresample-dev \
+        && rm -rf /var/lib/apt/lists/*
 
 ################################################################################
 # main app installation

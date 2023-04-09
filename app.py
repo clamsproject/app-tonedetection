@@ -55,7 +55,7 @@ class ToneDetection(ClamsApp):
             },
             {
                 "name":"tolerance",
-                "type":"float",
+                "type":"number",
                 "default":"1.0",
                 "description":"the threshold value for a match within the processing"
             },
@@ -78,12 +78,12 @@ class ToneDetection(ClamsApp):
         newview = mmif_obj.new_view()
         self.sign_view(newview, conf)
 
-        for i, file in enumerate(files):
+        for file, location in files.items():
             newview.new_contain(AnnotationTypes.TimeFrame, 
                                 timeUnit = conf["timeUnit"],
-                                document = docs[i].id)
+                                document = file)
             
-            tones = self._detect_tones(file, conf)
+            tones = self._detect_tones(location, **conf)
 
             for tone_pair in tones:
                 tf_anno = newview.new_annotation(AnnotationTypes.TimeFrame)
@@ -93,7 +93,7 @@ class ToneDetection(ClamsApp):
         return mmif_obj
     
     @staticmethod
-    def _get_docs(mmif: Mmif) -> tuple[list, list]:
+    def _get_docs(mmif: Mmif):
         documents = [document for document in mmif.documents 
                      if document.at_type == DocumentTypes.AudioDocument
                      and len(document.location) > 0]
