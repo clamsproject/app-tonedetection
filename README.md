@@ -1,16 +1,6 @@
 # app-tonesdetection-python 
 
-This repository provides scaffolding for Python-based CLAMS app development. Specifically, we contains 
-
-1. `app.py` to write the app 
-1. `requirements.txt` to specify python dependencies
-1. `Containerfile` to containerize the app and specify system dependencies
-1. an empty `LICENSE` file to replace with an actual license information of the app
-1. this `README.md` file with basic instructions of app installation and execution
-1. some GH actions workflow for issue/bug-report management
-1. a GH actions workflow to build and upload app images upon any push of a git tag
-
-Modify this file as needed to provide proper instructions for your users. 
+The function of this app is to detect and return timespans in the audio track of a file, which correspond to monotonic audio (i.e., the "tones" in SMPTE bars+tones). 
 
 ## Requirements 
 
@@ -19,12 +9,12 @@ This CLAMS app requires:
 - `docker`; to run the app in a Docker container (as a HTTP server).
 - A HTTP client utility (such as `curl`); to invoke and execute analysis.
 
-## Building and running the Docker image
+## Building and running the Container image
 
-From the project directory, run the following in your terminal to build the Docker image from the included Dockerfile:
+From the project directory, run the following in your terminal to build the Container image from the included Containerfile:
 
 ```bash
-docker build . -f Dockerfile -t <app_name>
+docker build . -f Containerfile -t <app_name>
 ```
 
 Alternatively, the app maybe already be available on docker hub. 
