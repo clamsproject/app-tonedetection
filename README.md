@@ -1,4 +1,4 @@
-# app-template-python 
+# app-tonesdetection-python 
 
 This repository provides scaffolding for Python-based CLAMS app development. Specifically, we contains 
 
@@ -14,9 +14,8 @@ Modify this file as needed to provide proper instructions for your users.
 
 ## Requirements 
 
-Generally, an CLAMS app requires 
-
-- Python3 with the `clams-python` module installed; to run the app locally. 
+This CLAMS app requires:
+- Python3 with the `clams-python` module (version 0.5.3) installed; to run the app locally. The assumed mmif version is 0.4.0
 - `docker`; to run the app in a Docker container (as a HTTP server).
 - A HTTP client utility (such as `curl`); to invoke and execute analysis.
 
@@ -44,6 +43,10 @@ where /path/to/data/directory is the location of your media files or MMIF object
 
 ## Invoking the app
 Once the app is running as a HTTP server, to invoke the app and get automatic annotations, simply send a POST request to the app with a MMIF input as request body.
+```bash
+curl -X PUT -d @path/to/file.mmif http://0.0.0.0:5000
+```
+
 
 MMIF input files can be obtained from outputs of other CLAMS apps, or you can create an empty MMIF only with source media locations using `clams source` command. See the help message for a more detailed instructions. 
 

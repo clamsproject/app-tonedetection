@@ -1,5 +1,5 @@
-# Use the same base image version as the clams-python python library version
-FROM ghcr.io/clamsproject/clams-python-ffmpeg:0.5.3
+# Uses the CLAMS Python FFMPEG base image
+FROM ghcr.io/clamsproject/clams-python-ffmpeg:0.5.2
 # See https://github.com/orgs/clamsproject/packages?tab=packages&q=clams-python for more base images
 
 ################################################################################
@@ -15,6 +15,7 @@ RUN apt-get install -y \
         libavresample-dev \ 
         libswscale-dev \ 
         libswresample-dev \
+        ffmpeg \ 
         && rm -rf /var/lib/apt/lists/*
 
 ################################################################################

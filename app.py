@@ -5,6 +5,8 @@
 import argparse
 import aubio
 import numpy as np
+import os
+import ffmpeg 
 
 from clams import ClamsApp, Restifier, AppMetadata
 from typing import Union, Tuple
@@ -29,7 +31,7 @@ class ToneDetection(ClamsApp):
             identifier=f"http://mmif.clams.ai/apps/tonesdetection/{__version__}",
             parameters=[
             {
-                "name":"timeUnit",
+                "name":"time_unit",
                 "type":"string",
                 "choices":["seconds", "milliseconds"],
                 "default":"milliseconds",
@@ -51,7 +53,7 @@ class ToneDetection(ClamsApp):
                 "name":"stop_at",
                 "type":"integer",
                 "default":"None",
-                "description": "stop point for audio processing"
+                "description": "stop point in ms for audio processing"
             },
             {
                 "name":"tolerance",
@@ -80,7 +82,7 @@ class ToneDetection(ClamsApp):
 
         for file, location in files.items():
             newview.new_contain(AnnotationTypes.TimeFrame, 
-                                timeUnit = conf["timeUnit"],
+                                timeUnit = conf["time_unit"],
                                 document = file)
             
             tones = self._detect_tones(location, **conf)
@@ -90,6 +92,7 @@ class ToneDetection(ClamsApp):
                 tf_anno.add_property("start", tone_pair[0])
                 tf_anno.add_property("end", tone_pair[1])
                 tf_anno.add_property("frameType", "tones")
+
         return mmif_obj
     
     @staticmethod
@@ -111,19 +114,20 @@ class ToneDetection(ClamsApp):
         vec2, read2 = aud()
         vec2 = np.array(vec2)
         start_sample = 0
-        duration = kwargs["sample_size"]
+        sample_size = int(kwargs["sample_size"])
+        duration = sample_size
 
-        if kwargs["stopAt"] is not None:
-            endpoint = kwargs["stopAt"]
+        if kwargs["stop_at"] != "None":
+            endpoint = int(kwargs["stop_at"])
         else:
             endpoint = aud.duration
         
-        while read2 >= kwargs["sample_size"] and start_sample < endpoint:
+        while read2 >= sample_size and start_sample < endpoint:
             similarity = np.average(np.correlate(vec1, vec2, mode="valid"))
             sim_count = 0
-            while similarity >= kwargs["tolerance"]:
+            while similarity >= float(kwargs["tolerance"]):
                 sim_count += 1
-                duration += kwargs["sample_size"]
+                duration += sample_size
                 vec2, read2 = aud()
                 vec2 = np.array(vec2)
                 similarity = np.average(np.correlate(vec1, vec2, mode="valid"))
@@ -133,11 +137,11 @@ class ToneDetection(ClamsApp):
             start_sample += duration
             vec1 = vec2
             vec2, read2 = aud()
-            duration = kwargs["sample_size"]
+            duration = sample_size
         if kwargs["time_unit"] == "seconds":
-            return [x for x in out if x[1]-x[0] >= kwargs["length"] / 1000]
+            return [x for x in out if x[1]-x[0] >= int(kwargs["length"]) / 1000]
         elif kwargs["time_unit"] == "milliseconds":
-            return [x for x in out if x[1]-x[0] >= kwargs["length"]]
+            return [x for x in out if x[1]-x[0] >= int(kwargs["length"])]
         
 # Main ===============================|
 
