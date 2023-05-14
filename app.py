@@ -34,7 +34,7 @@ class ToneDetection(ClamsApp):
                 "name":"time_unit",
                 "type":"string",
                 "choices":["seconds", "milliseconds"],
-                "default":"milliseconds",
+                "default":"seconds",
                 "description":"output unit"
             },
             {
@@ -141,7 +141,7 @@ class ToneDetection(ClamsApp):
         if kwargs["time_unit"] == "seconds":
             return [x for x in out if x[1]-x[0] >= int(kwargs["length"]) / 1000]
         elif kwargs["time_unit"] == "milliseconds":
-            return [x for x in out if x[1]-x[0] >= int(kwargs["length"])]
+            return [x*1000 for x*1000 in out if (x[1]-x[0])*1000 >= int(kwargs["length"])]
         
 # Main ===============================|
 
