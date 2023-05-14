@@ -8,15 +8,17 @@ FROM ghcr.io/clamsproject/clams-python-ffmpeg:0.5.2
 RUN apt-get update
 RUN pip install numpy
 RUN apt-get install -y gcc
+RUN apt-get install -y pkg-config build-essential
 RUN apt-get install -y \
+        libaubio-dev \
         libavutil-dev \
         libavcodec-dev \ 
         libavformat-dev \ 
         libavresample-dev \ 
         libswscale-dev \ 
         libswresample-dev \
-        ffmpeg \ 
-        && rm -rf /var/lib/apt/lists/*
+        ffmpeg 
+
 
 ################################################################################
 # main app installation
