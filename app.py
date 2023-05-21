@@ -14,56 +14,50 @@ from lapps.discriminators import Uri
 from mmif import Mmif, View, Annotation, Document, AnnotationTypes, DocumentTypes
 
 # App Wrapper ========================|
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 class ToneDetection(ClamsApp):
 
     def _appmetadata(self) -> AppMetadata:
         # see https://sdk.clams.ai/autodoc/clams.app.html#clams.app.ClamsApp._appmetadata
-        app_version = __version__
-        tone_detec_version = '0.0.1'
         metadata = AppMetadata(
             name="Tone Detector",
             description="Detects spans of monotonic audio",
-            app_version=app_version,
             app_license="Apache 2.0",
             url=f"http://mmif.clams.ai/apps/tonesdetection/{__version__}",
-            identifier=f"http://mmif.clams.ai/apps/tonesdetection/{__version__}",
-            parameters=[
-            {
-                "name":"time_unit",
-                "type":"string",
-                "choices":["seconds", "milliseconds"],
-                "default":"seconds",
-                "description":"output unit"
-            },
-            {
-                "name":"length",
-                "type":"integer",
-                "default":"2000",
-                "description":"minimum ms length of sample to be included in the output",
-            },
-            {
-                "name":"sample_size",
-                "type":"integer",
-                "default" :"512",
-                "description" : "size of sample to be compared"
-            },
-            {
-                "name":"stop_at",
-                "type":"integer",
-                "default":"None",
-                "description": "stop point in ms for audio processing"
-            },
-            {
-                "name":"tolerance",
-                "type":"number",
-                "default":"1.0",
-                "description":"the threshold value for a match within the processing"
-            },
-            ]
-        )
+            identifier='tonesdetection')
         
+        metadata.add_parameter(name='time_unit', 
+                               description='unit for annotation output',
+                               type='string',
+                               choices=['seconds','milliseconds'],
+                               default='seconds',
+                               multivalued=False)
+        
+        metadata.add_parameter(name='length_threshold',
+                               description='minimum length threshold (in ms)',
+                               type='integer',
+                               default=2000,
+                               multivalued=False)
+        
+        metadata.add_parameter(name='sample_size',
+                               description='length of samples to be compared',
+                               type='integer',
+                               default=512,
+                               multivalued=False)
+        
+        metadata.add_parameter(name='stop_at',
+                               description='stop point for audio processing (in ms)',
+                               type='integer',
+                               default='None',
+                               multivalued=False)
+        
+        metadata.add_parameter(name='tolerance',
+                               description='threshold value for a \"match\" within audio processing',
+                               type='number',
+                               default=1.0,
+                               multivalued=False)
+
         metadata.add_input(DocumentTypes.AudioDocument)
         metadata.add_output(AnnotationTypes.TimeFrame)
         return metadata
@@ -139,9 +133,9 @@ class ToneDetection(ClamsApp):
             vec2, read2 = aud()
             duration = sample_size
         if kwargs["time_unit"] == "seconds":
-            return [x for x in out if x[1]-x[0] >= int(kwargs["length"]) / 1000]
+            return [x for x in out if x[1]-x[0] >= int(kwargs["length_threshold"]) / 1000]
         elif kwargs["time_unit"] == "milliseconds":
-            return [(x[0]*1000, x[1]*1000) for x in out if (x[1]-x[0])*1000 >= int(kwargs["length"])]
+            return [(x[0]*1000, x[1]*1000) for x in out if (x[1]-x[0])*1000 >= int(kwargs["length_threshold"])]
         
 # Main ===============================|
 
