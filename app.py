@@ -1,66 +1,20 @@
-# CLAMS Wrapper for tone-detector.py
-# A tool for detecting monotonic audio
-
-# Imports ============================|
+#Imports =====================================================================|
 import argparse
-import aubio
-import numpy as np
-import os
-import ffmpeg 
-
-from clams import ClamsApp, Restifier, AppMetadata
-from typing import Union, Tuple
-from lapps.discriminators import Uri
+from typing import Union
+from clams import ClamsApp, Restifier
 from mmif import Mmif, View, Annotation, Document, AnnotationTypes, DocumentTypes
+import aubio 
+import numpy as np 
 
-# App Wrapper ========================|
-__version__ = '0.0.2'
+#Primary Class ===============================================================|
+class TonesDetector(ClamsApp):
 
-class ToneDetection(ClamsApp):
+    def __init__(self):
+        super().__init__()
 
-    def _appmetadata(self) -> AppMetadata:
-        # see https://sdk.clams.ai/autodoc/clams.app.html#clams.app.ClamsApp._appmetadata
-        metadata = AppMetadata(
-            name="Tone Detector",
-            description="Detects spans of monotonic audio",
-            app_license="Apache 2.0",
-            url=f"http://mmif.clams.ai/apps/tonesdetection/{__version__}",
-            identifier='tonesdetection')
-        
-        metadata.add_parameter(name='time_unit', 
-                               description='unit for annotation output',
-                               type='string',
-                               choices=['seconds','milliseconds'],
-                               default='seconds',
-                               multivalued=False)
-        
-        metadata.add_parameter(name='length_threshold',
-                               description='minimum length threshold (in ms)',
-                               type='integer',
-                               default=2000,
-                               multivalued=False)
-        
-        metadata.add_parameter(name='sample_size',
-                               description='length of samples to be compared',
-                               type='integer',
-                               default=512,
-                               multivalued=False)
-        
-        metadata.add_parameter(name='stop_at',
-                               description='stop point for audio processing (in ms)',
-                               type='integer',
-                               default='None',
-                               multivalued=False)
-        
-        metadata.add_parameter(name='tolerance',
-                               description='threshold value for a \"match\" within audio processing',
-                               type='number',
-                               default=1.0,
-                               multivalued=False)
-
-        metadata.add_input(DocumentTypes.AudioDocument)
-        metadata.add_output(AnnotationTypes.TimeFrame)
-        return metadata
+    def _appmetadata(self):
+        #see metadata.py
+        pass
 
     def _annotate(self, mmif: Union[str, dict, Mmif], **parameters) -> Mmif:
         # see https://sdk.clams.ai/autodoc/clams.app.html#clams.app.ClamsApp._annotate
@@ -89,6 +43,7 @@ class ToneDetection(ClamsApp):
 
         return mmif_obj
     
+    #Helper Methods ==========================================================|
     @staticmethod
     def _get_docs(mmif: Mmif):
         documents = [document for document in mmif.documents 
@@ -116,7 +71,7 @@ class ToneDetection(ClamsApp):
         else:
             endpoint = aud.duration
         
-        while read2 >= sample_size and start_sample < endpoint:
+        while read2 >= duration and start_sample < endpoint:
             similarity = np.average(np.correlate(vec1, vec2, mode="valid"))
             sim_count = 0
             while similarity >= float(kwargs["tolerance"]):
@@ -136,8 +91,8 @@ class ToneDetection(ClamsApp):
             return [x for x in out if x[1]-x[0] >= int(kwargs["length_threshold"]) / 1000]
         elif kwargs["time_unit"] == "milliseconds":
             return [(x[0]*1000, x[1]*1000) for x in out if (x[1]-x[0])*1000 >= int(kwargs["length_threshold"])]
-        
-# Main ===============================|
+
+#Main ========================================================================|
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -146,10 +101,12 @@ if __name__ == "__main__":
     )
     parser.add_argument("--production", action="store_true", help="run gunicorn server")
     # more arguments as needed
+    # parser.add_argument(more_arg...)
+
     parsed_args = parser.parse_args()
 
     # create the app instance
-    app = ToneDetection()
+    app = TonesDetector()
 
     http_app = Restifier(app, port=int(parsed_args.port)
     )
