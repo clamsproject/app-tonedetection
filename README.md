@@ -1,10 +1,10 @@
 # Tone Detector
 
-This app detects and returns timespans in the audio track of a (potentially multimedia) file, which correspond to monotonic audio (i.e., the "tones" in SMPTE bars-and-tones).
+This app detects and returns timespans in the audio track of a (potentially multimedia) file, which correspond to monotonic audio (i.e., the "tones" in SMPTE bars-and-tones). Created for use in [CLAMS Project](https://clams.ai/).
 
 ## User instruction
 
-General user instruction for CLAMS apps is available at [CLAMS Apps documentation](https://apps.clams.ai/clamsapp/). The general user template should cover the vast majority of use cases for this app, as all user configuration for this app is done via runtime parameters.
+General user instruction for CLAMS apps is available at [CLAMS Apps documentation](https://apps.clams.ai/clamsapp/). The general user template should cover the vast majority of use cases for this app, as all user configuration is done via runtime parameters.
 
 ## System requirments
 
