@@ -2,7 +2,7 @@
 import argparse
 from typing import Union
 from clams import ClamsApp, Restifier
-from mmif import Mmif, View, Annotation, Document, AnnotationTypes, DocumentTypes
+from mmif import Mmif, AnnotationTypes, DocumentTypes
 import aubio 
 import numpy as np 
 
