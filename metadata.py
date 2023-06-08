@@ -23,8 +23,6 @@ def appmetadata() -> AppMetadata:
         app_license="Apache 2.0",
         identifier="tonesdetection",
         url=f"https://github.com/clamsproject/app-tonedetection.git",
-        analyzer_version='0.4.9',
-        analyzer_license="GPLv3"
     )
 
     #IO Spec =================================================================|
