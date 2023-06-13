@@ -22,7 +22,7 @@ def appmetadata() -> AppMetadata:
         description="Detects spans of monotonic audio within an audio file",
         app_license="Apache 2.0",
         identifier="tonesdetection",
-        url=f"https://github.com/clamsproject/app-tonedetection.git",
+        url=f"https://github.com/clamsproject/app-tonedetection",
     )
 
     #IO Spec =================================================================|
