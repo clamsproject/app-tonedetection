@@ -4,6 +4,7 @@ DO NOT CHANGE the name of the file
 """
 
 from mmif import DocumentTypes, AnnotationTypes
+from clams.app import ClamsApp
 from clams.appmetadata import AppMetadata
 
 def appmetadata() -> AppMetadata:
@@ -16,12 +17,11 @@ def appmetadata() -> AppMetadata:
     :return: AppMetadata object holding all necessary information.
     """
     #Initialize Metadata =====================================================|
-    __version__ = 'v1'
     metadata = AppMetadata(
         name="Tone_Detector",
         description="Detects spans of monotonic audio within an audio file",
         app_license="Apache 2.0",
-        identifier="tonesdetection",
+        identifier="tonedetection",
         url=f"https://github.com/clamsproject/app-tonedetection",
     )
 
@@ -67,4 +67,8 @@ def appmetadata() -> AppMetadata:
 # DO NOT CHANGE the main block
 if __name__ == '__main__':
     import sys
-    sys.stdout.write(appmetadata().jsonify(pretty=True))
+    metadata = appmetadata()
+    for param in ClamsApp.universal_parameters:
+        metadata.add_parameter(**param)
+    sys.stdout.write(metadata.jsonify(pretty=True))
+
