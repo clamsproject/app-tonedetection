@@ -30,26 +30,26 @@ def appmetadata() -> AppMetadata:
     metadata.add_output(AnnotationTypes.TimeFrame)
 
     #Runtime Params ==========================================================|
-    metadata.add_parameter(name='time_unit', 
+    metadata.add_parameter(name='timeUnit', 
                             description='the unit for annotation output',
                             type='string',
                             choices=['seconds','milliseconds'],
                             default='seconds',
                             multivalued=False)
     
-    metadata.add_parameter(name='length_threshold',
+    metadata.add_parameter(name='lengthThreshold',
                             description='minimum length threshold (in ms)',
                             type='integer',
                             default=2000,
                             multivalued=False)
     
-    metadata.add_parameter(name='sample_size',
+    metadata.add_parameter(name='sampleSize',
                             description='length for each segment of samples to be compared',
                             type='integer',
                             default=512,
                             multivalued=False)
     
-    metadata.add_parameter(name='stop_at',
+    metadata.add_parameter(name='stopAt',
                             description='stop point for audio processing (in ms). Defaults to the length of the file',
                             type='integer',
                             default='None',

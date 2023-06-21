@@ -63,11 +63,11 @@ class TonesDetector(ClamsApp):
         vec2, read2 = aud()
         vec2 = np.array(vec2)
         start_sample = 0
-        sample_size = int(kwargs["sample_size"])
+        sample_size = int(kwargs["sampleSize"])
         duration = sample_size
 
         if kwargs["stop_at"] != "None":
-            endpoint = int(kwargs["stop_at"])
+            endpoint = int(kwargs["stopAt"])
         else:
             endpoint = aud.duration
         
@@ -87,10 +87,10 @@ class TonesDetector(ClamsApp):
             vec1 = vec2
             vec2, read2 = aud()
             duration = sample_size
-        if kwargs["time_unit"] == "seconds":
-            return [x for x in out if x[1]-x[0] >= int(kwargs["length_threshold"]) / 1000]
-        elif kwargs["time_unit"] == "milliseconds":
-            return [(x[0]*1000, x[1]*1000) for x in out if (x[1]-x[0])*1000 >= int(kwargs["length_threshold"])]
+        if kwargs["timeUnit"] == "seconds":
+            return [x for x in out if x[1]-x[0] >= int(kwargs["lengthThreshold"]) / 1000]
+        elif kwargs["timeUnit"] == "milliseconds":
+            return [(x[0]*1000, x[1]*1000) for x in out if (x[1]-x[0])*1000 >= int(kwargs["lengthThreshold"])]
 
 #Main ========================================================================|
 
