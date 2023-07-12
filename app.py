@@ -39,7 +39,7 @@ class TonesDetector(ClamsApp):
                 tf_anno = newview.new_annotation(AnnotationTypes.TimeFrame)
                 tf_anno.add_property("start", tone_pair[0])
                 tf_anno.add_property("end", tone_pair[1])
-                tf_anno.add_property("frameType", "tones")
+                tf_anno.add_property("frameType", "tone")
 
         return mmif_obj
     

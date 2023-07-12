@@ -27,7 +27,7 @@ def appmetadata() -> AppMetadata:
 
     #IO Spec =================================================================|
     metadata.add_input(DocumentTypes.AudioDocument)
-    metadata.add_output(AnnotationTypes.TimeFrame)
+    metadata.add_output(AnnotationTypes.TimeFrame, frameType="tone")
 
     #Runtime Params ==========================================================|
     metadata.add_parameter(name='timeUnit', 
