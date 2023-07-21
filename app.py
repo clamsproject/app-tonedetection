@@ -4,6 +4,7 @@ from typing import Union
 from clams import ClamsApp, Restifier
 from mmif import Mmif, AnnotationTypes, DocumentTypes
 import aubio 
+
 import numpy as np 
 
 #Primary Class ===============================================================|
@@ -30,7 +31,7 @@ class TonesDetector(ClamsApp):
 
         for file, location in files.items():
             newview.new_contain(AnnotationTypes.TimeFrame, 
-                                timeUnit = conf["time_unit"],
+                                timeUnit = conf["timeUnit"],
                                 document = file)
             
             tones = self._detect_tones(location, **conf)
@@ -66,7 +67,7 @@ class TonesDetector(ClamsApp):
         sample_size = int(kwargs["sampleSize"])
         duration = sample_size
 
-        if kwargs["stop_at"] != "None":
+        if kwargs["stopAt"] != "None":
             endpoint = int(kwargs["stopAt"])
         else:
             endpoint = aud.duration
@@ -91,6 +92,7 @@ class TonesDetector(ClamsApp):
             return [x for x in out if x[1]-x[0] >= int(kwargs["lengthThreshold"]) / 1000]
         elif kwargs["timeUnit"] == "milliseconds":
             return [(x[0]*1000, x[1]*1000) for x in out if (x[1]-x[0])*1000 >= int(kwargs["lengthThreshold"])]
+            
 
 #Main ========================================================================|
 

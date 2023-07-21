@@ -4,7 +4,7 @@ This app detects and returns timespans in the audio track of a (potentially mult
 
 ## User instruction
 
-General user instruction for CLAMS apps is available at [CLAMS Apps documentation](https://apps.clams.ai/clamsapp/). The general user template should cover the vast majority of use cases for this app, as all user configuration is done via runtime parameters.
+General user instruction for CLAMS apps is available at [CLAMS Apps documentation](https://apps.clams.ai/clamsapp). The general user template should cover the vast majority of use cases for this app, as all user configuration is done via runtime parameters.
 
 ## System requirments
 
