@@ -1,5 +1,6 @@
 #Imports =====================================================================|
 import argparse
+import logging
 from typing import Union
 from clams import ClamsApp, Restifier
 from mmif import Mmif, AnnotationTypes, DocumentTypes
@@ -27,7 +28,8 @@ class TonesDetector(ClamsApp):
         conf = self.get_configuration(**parameters)
         
         newview = mmif_obj.new_view()
-        self.sign_view(newview, conf)
+        # we want to sign the view with the raw user input, not the processed one
+        self.sign_view(newview, parameters)
 
         for file, location in files.items():
             newview.new_contain(AnnotationTypes.TimeFrame, 
@@ -98,11 +100,9 @@ class TonesDetector(ClamsApp):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--port", action="store", default="5000", help="set port to listen"
-    )
+    parser.add_argument("--port", action="store", default="5000", help="set port to listen" )
     parser.add_argument("--production", action="store_true", help="run gunicorn server")
-    # more arguments as needed
+    # add more arguments as needed
     # parser.add_argument(more_arg...)
 
     parsed_args = parser.parse_args()
@@ -110,9 +110,11 @@ if __name__ == "__main__":
     # create the app instance
     app = TonesDetector()
 
-    http_app = Restifier(app, port=int(parsed_args.port)
-    )
+    http_app = Restifier(app, port=int(parsed_args.port))
+    # for running the application in production mode
     if parsed_args.production:
         http_app.serve_production()
+    # development mode
     else:
+        app.logger.setLevel(logging.DEBUG)
         http_app.run()

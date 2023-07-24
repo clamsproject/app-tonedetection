@@ -33,7 +33,7 @@ def appmetadata() -> AppMetadata:
     metadata.add_parameter(name='timeUnit', 
                             description='the unit for annotation output',
                             type='string',
-                            choices=['seconds','milliseconds'],
+                            choices=['seconds', 'seconds', 'milliseconds'],
                             default='seconds',
                             multivalued=False)
     
@@ -71,4 +71,3 @@ if __name__ == '__main__':
     for param in ClamsApp.universal_parameters:
         metadata.add_parameter(**param)
     sys.stdout.write(metadata.jsonify(pretty=True))
-

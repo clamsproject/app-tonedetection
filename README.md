@@ -4,7 +4,7 @@ This app detects and returns timespans in the audio track of a (potentially mult
 
 ## User instruction
 
-General user instruction for CLAMS apps is available at [CLAMS Apps documentation](https://apps.clams.ai/clamsapp). The general user template should cover the vast majority of use cases for this app, as all user configuration is done via runtime parameters.
+General user instructions for CLAMS apps is available at [CLAMS Apps documentation](https://apps.clams.ai/clamsapp).
 
 ## System requirments
 
@@ -12,8 +12,9 @@ The `aubio` Python library which this app uses is built on top of the `ffmpeg` m
 
 ## Configurable runtime parameters
 
-Common use cases for altering the runtime parameters include:
+Although all CLAMS apps are supposed to run as *stateless* HTTP servers, some apps can configured at request time using [URL query strings](https://en.wikipedia.org/wiki/Query_string). For runtime parameter supported by this app, please visit [CLAMS App Directory](https://apps.clams.ai) and look for the app name and version.
 
-1. Limiting the duration of processed audio, in order to prevent superfluous processing. For example, if the tones are known to be in the first 30 seconds of the video.
+Specifically for this app, common use cases for altering the runtime parameters include:
 
-2. Altering the length threshold of tones, in order to capture shorter lengths of monotonic audio.
+1. `stopAt`: Limiting the duration of processed audio, in order to prevent superfluous processing. For example, if the tones are known to be in the first 30 seconds of the video.
+2. `tolerance`: Altering the length threshold of tones, in order to capture shorter lengths of monotonic audio.
