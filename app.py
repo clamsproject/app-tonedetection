@@ -1,12 +1,32 @@
 #Imports =====================================================================|
 import argparse
 import logging
+import os
 from typing import Union
+from contextlib import contextmanager
 from clams import ClamsApp, Restifier
 from mmif import Mmif, AnnotationTypes, DocumentTypes
-import aubio 
+import aubio
 
-import numpy as np 
+import numpy as np
+
+
+@contextmanager
+def suppress_stderr():
+    """
+    Context manager to suppress stderr output (e.g., FFmpeg warnings from aubio).
+    Used to suppress warnings like "Could not update timestamps for skipped samples"
+    that occur with VBR MP3 files.
+    """
+    devnull = os.open(os.devnull, os.O_WRONLY)
+    old_stderr = os.dup(2)
+    os.dup2(devnull, 2)
+    try:
+        yield
+    finally:
+        os.dup2(old_stderr, 2)
+        os.close(devnull)
+        os.close(old_stderr) 
 
 #Primary Class ===============================================================|
 class TonesDetector(ClamsApp):
@@ -60,36 +80,39 @@ class TonesDetector(ClamsApp):
         """
         perform tone detection using average cross-correlation across consecutive samples
         """
-        aud = aubio.source(filepath)
-        out = []
-        vec1 = np.array(aud()[0])
-        vec2, read2 = aud()
-        vec2 = np.array(vec2)
-        start_sample = 0
-        sample_size = int(kwargs["sampleSize"])
-        duration = sample_size
-
-        if kwargs["stopAt"] != "None":
-            endpoint = int(kwargs["stopAt"])
-        else:
-            endpoint = aud.duration
-        
-        while read2 >= duration and start_sample < endpoint:
-            similarity = np.average(np.correlate(vec1, vec2, mode="valid"))
-            sim_count = 0
-            while similarity >= float(kwargs["tolerance"]):
-                sim_count += 1
-                duration += sample_size
-                vec2, read2 = aud()
-                vec2 = np.array(vec2)
-                similarity = np.average(np.correlate(vec1, vec2, mode="valid"))
-            if sim_count > 0:
-                out.append((start_sample/aud.samplerate, (start_sample+duration)/aud.samplerate))
-            sim_count = 0
-            start_sample += duration
-            vec1 = vec2
+        # Suppress FFmpeg warnings (e.g., VBR MP3 timestamp warnings)
+        with suppress_stderr():
+            aud = aubio.source(filepath)
+            out = []
+            vec1 = np.array(aud()[0])
             vec2, read2 = aud()
+            vec2 = np.array(vec2)
+            start_sample = 0
+            sample_size = int(kwargs["sampleSize"])
             duration = sample_size
+
+            if kwargs["stopAt"] != "None":
+                endpoint = int(kwargs["stopAt"])
+            else:
+                endpoint = aud.duration
+
+            while read2 >= duration and start_sample < endpoint:
+                similarity = np.average(np.correlate(vec1, vec2, mode="valid"))
+                sim_count = 0
+                while similarity >= float(kwargs["tolerance"]):
+                    sim_count += 1
+                    duration += sample_size
+                    vec2, read2 = aud()
+                    vec2 = np.array(vec2)
+                    similarity = np.average(np.correlate(vec1, vec2, mode="valid"))
+                if sim_count > 0:
+                    out.append((start_sample/aud.samplerate, (start_sample+duration)/aud.samplerate))
+                sim_count = 0
+                start_sample += duration
+                vec1 = vec2
+                vec2, read2 = aud()
+                duration = sample_size
+
         if kwargs["timeUnit"] == "seconds":
             return [x for x in out if x[1]-x[0] >= int(kwargs["lengthThreshold"]) / 1000]
         elif kwargs["timeUnit"] == "milliseconds":
