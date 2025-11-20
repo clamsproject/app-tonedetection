@@ -1,5 +1,5 @@
 # Use the same base image version as the clams-python python library version
-FROM ghcr.io/clamsproject/clams-python-ffmpeg:1.0.9
+FROM ghcr.io/clamsproject/clams-python-ffmpeg:1.3.3
 # See https://github.com/orgs/clamsproject/packages?tab=packages&q=clams-python for more base images
 # IF you want to automatically publish this image to the clamsproject organization, 
 # 1. you should have generated this template without --no-github-actions flag
@@ -18,18 +18,7 @@ ENV CLAMS_APP_VERSION ${CLAMS_APP_VERSION}
 # clams-python base images are based on debian distro
 # install more system packages as needed using the apt manager
 ################################################################################
-RUN apt-get update
-RUN pip install numpy
-# numpy and gcc are required for installing aubio as sdist
-RUN apt-get install -y pkg-config build-essential
-RUN apt-get install -y \
-    libaubio-dev \ 
-    libavutil-dev \
-    libavcodec-dev \ 
-    libavformat-dev \ 
-    libavresample-dev \ 
-    libswscale-dev \ 
-    ffmpeg 
+# ffmpeg is included in the base image (clams-python-ffmpeg)
 ################################################################################
 # main app installation
 COPY ./ /app
